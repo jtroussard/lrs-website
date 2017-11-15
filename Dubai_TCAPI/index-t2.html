@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width = device-wdith, initial-scale = 1">
+<title>Dubai Metro LRS</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+<script src="scripts/TinCanJS/build/tincan-min.js" type="text/javascript"></script>
+<script src="scripts/common.js" type="text/javascript"></script>
+
+<script src="https://use.fontawesome.com/444b76bd41.js"></script>
+
+<script type="text/javascript">
+        //TinCan.enableDebug();
+
+        //
+        // content definition
+        //
+        var pageArray = [
+                "Overview/history-dubai.html",
+		"Overview/history-metro.html",
+		"System/station-breakdown.html",
+		"System/station-location.html",
+		"System/station-trams.html",
+		"System/facilities-wifi.html",
+		"System/facilities-handicap.html",
+		"System/facilities-security.html",
+		"System/facilities-parking.html",
+		"Use/use-nolcard.html",
+		"Use/use-rules.html",
+		"Use/use-schedule.html",
+                "assessmenttemplate.html"
+            ],
+            processedUnload = false,
+            reachedEnd = false,
+            maxPageReached = 0,
+            tincan = new TinCan (
+                {
+                    url: window.location.href,
+                    activity: DubaiMetro.CourseActivity
+                }
+            );
+
+        var BookmarkingTracking = function(){
+            this.currentPage = 0;
+            this.startTimeStamp = new Date();
+            this.startAttemptDuration = 0;
+            this.attemptComplete = false;
+        };
+
+        BookmarkingTracking.prototype = {
+            initFromBookmark: function(bookmark){
+                this.setPage(parseInt(bookmark.location, 10));
+                this.setStartDuration(bookmark.attemptDuration);
+                this.getCompletion(bookmark.attemptComplete);
+            },
+            reset: function(){
+                this.setPage(0);
+                this.setStartDuration(0);
+                this.setCompletion(false);
+            },
+            save: function (callback){
+                var bookmarking = {
+                    location: this.currentPage,
+                    attemptDuration: this.getAttemptDuration(),
+                    attemptComplete: this.attemptComplete
+                };
+                tincan.setState("bookmarking-data", bookmarking, {
+                    contentType: "application/json",
+                    overwriteJSON: false,
+                    callback: callback
+                });
+            },
+            get: function(){
+                var stateResult = tincan.getState("bookmarking-data");
+                if (stateResult.err === null && stateResult.state !== null && stateResult.state.contents !== "") {
+                    return stateResult.state.contents;
+                }
+                return null;
+            },
+            setStartDuration: function(duration){
+                this.startAttemptDuration = duration;
+            },
+            setPage: function(page){
+                this.currentPage = page;
+                return true;
+            },
+            getPage: function(){
+                return this.currentPage;
+            },
+            incrementPage: function (){
+                this.currentPage++;
+            },
+            decrementPage: function (){
+                this.currentPage--;
+            },
+            setCompletion: function(completion){
+                this.attemptComplete = completion;
+                return true;
+            },
+            getCompletion: function(completion){
+                return this.attemptComplete;
+            },
+            getAttemptDuration: function (){
+                return this.startAttemptDuration + this.getSessionDuration();
+            },
+            getSessionDuration: function (){
+                return Math.abs ((new Date()) - this.startTimeStamp);
+            }
+        };
+
+        var bookmarkingData = new BookmarkingTracking();
+
+        //
+        // functions for sizing the iFrame
+        //
+        function setIframeHeight(id, navWidth) {
+            if ( document.getElementById ) {
+                var theIframe = document.getElementById(id);
+                if (theIframe) {
+                    var height = getWindowHeight() - 35;
+                    theIframe.style.height = Math.round( height ) - navWidth + "px";
+                    theIframe.style.marginTop = Math.round( ((height - navWidth) - parseInt(theIframe.style.height) )/2 ) + "px";
+                }
+            }
+        }
+
+        function getWindowHeight() {
+            var height = 0;
+            if (window.innerHeight){
+                height = window.innerHeight - 18;
+            }
+            else if (document.documentElement && document.documentElement.clientHeight){
+                height = document.documentElement.clientHeight;
+            }
+            else if (document.body && document.body.clientHeight) {
+                height = document.body.clientHeight;
+            }
+            return height;
+        }
+
+        function SetupIFrame(){
+            //set our iFrame for the content to take up the full screen except for our navigation
+            var navWidth = 80;
+            setIframeHeight("contentFrame", navWidth);
+            window.onresize = function() { setIframeHeight("contentFrame", navWidth); };
+        }
+
+        //
+        // navigation functions
+        //
+        function doStart(){
+            //get the iFrame sized correctly and set up
+            SetupIFrame();
+            
+            var statements = [];
+            statements.push({
+                verb: {
+                    id: "http://adlnet.gov/expapi/verbs/initialized",
+                    display: {
+                        "en-US" : "initialized"
+                    }
+                },
+                context: DubaiMetro.getContext(),
+                result: {
+                    duration: "PT0S"
+                }
+            });
+            var attemptedStatement = {
+                verb: {
+                    id: "http://adlnet.gov/expapi/verbs/attempted",
+                    display: {
+                        "en-US" : "attempted"
+                    }
+                },
+                context: DubaiMetro.getContext(),
+                result: {
+                    duration: "PT0S"
+                }
+            };
+
+            //get activity_id bookmark if it exists
+            var bookmark = bookmarkingData.get();
+            if (bookmark !== null) {
+                if (confirm("Would you like to resume from where you previously left off? Click cancel to start a afresh.")) {
+                    bookmarkingData.initFromBookmark(bookmark);
+                    if (!bookmarkingData.getCompletion()) {
+                        var resumedStatement = {
+                            verb: {
+                                id: "http://adlnet.gov/expapi/verbs/resumed",
+                                display: {
+                                    "en-US": "resumed"
+                                }
+                            },
+                            context: DubaiMetro.getContext(),
+                            result: {
+                                duration: TinCan.Utils.convertMillisecondsToISO8601Duration(bookmark.attemptDuration)
+                            }
+                        };
+                        statements.push(resumedStatement);
+                    }
+                }
+                else {
+                    bookmarkingData.reset();
+
+                    //start new attempt
+                    statements.push(attemptedStatement);
+                    bookmarkingData.save();
+                }
+            }
+            else {
+                // if there isn't a stored bookmark, start the user at the first page
+                bookmarkingData.setPage(0);
+                statements.push(attemptedStatement);
+            }
+            tincan.sendStatements(statements);
+            goToPage();
+        }
+
+        function goToPage(){
+            var theIframe = document.getElementById("contentFrame"),
+                prevButton = document.getElementById("butPrevious"),
+                nextButton = document.getElementById("butNext");
+
+            //pass the TC arguments to the iframe
+            var tc_argStr = (pageArray[bookmarkingData.getPage()].indexOf("?") != -1) ? "&" + location.search.slice(1) : location.search;
+
+            //navigate the iFrame to the content
+            theIframe.src = pageArray[bookmarkingData.getPage()] + tc_argStr;
+
+            //disable the prev/next buttons if we are on the first or last page.
+            if (bookmarkingData.getPage() === 0){
+                nextButton.disabled = false;
+                prevButton.disabled = true;
+            }
+            else if (bookmarkingData.getPage() === (pageArray.length - 1)){
+                nextButton.disabled = true;
+                prevButton.disabled = false;
+            }
+            else{
+                nextButton.disabled = false;
+                prevButton.disabled = false;
+            }
+
+            bookmarkingData.save();
+        }
+
+        function doPrevious(){
+            if (bookmarkingData.getPage() > 0){
+                bookmarkingData.decrementPage();
+                curLocation = bookmarkingData.getPage();
+                prePage = "";
+                curPage = "";
+                switch(curLocation) {
+                    case 0:
+                        curPage = "pill-history-dubai"
+                        prePage = "pill-history-metro"
+                        break;
+                    case 1:
+                        curPage = "pill-history-metro";
+                        prePage = "pill-station-breakdown";
+                        break;
+                    case 2:
+                        curPage = "pill-station-breakdown";
+                        prePage = "pill-station-location";
+                        break;
+                    case 3:
+                        curPage = "pill-station-location";
+                        prePage = "pill-station-trams";
+                        break;    
+                    case 4:
+                        curPage = "pill-station-trams";
+                        prePage = "pill-facilities-wifi";
+                        break;    
+                    case 5:
+                        curPage = "pill-facilities-wifi";
+                        prePage = "pill-facilities-handicap";
+                        break;    
+                    case 6:
+                        curPage = "pill-facilities-handicap";
+                        prePage = "pill-facilities-security";
+                        break;
+                    case 7:
+                        curPage = "pill-facilities-security";
+                        prePage = "pill-facilities-parking";
+                        break;
+                    case 8:
+                        curPage = "pill-facilities-parking";
+                        prePage = "pill-use-nolcard";
+                        break;
+                    case 9:
+                        curPage = "pill-use-nolcard";
+                        prePage = "pill-use-rules"
+                        break;
+                    case 10:
+                        curPage = "pill-use-rules"
+                        prePage = "pill-use-schedule"
+                        break;
+                }
+                if (curPage != "" && prePage != "") {
+                    document.getElementById(curPage).setAttribute("class", "nav-link active");
+                    document.getElementById(prePage).setAttribute("class", "nav-link");
+                }
+            }
+            goToPage();
+        }
+
+        function doNext(){
+            if (bookmarkingData.getPage() < (pageArray.length - 1)){
+                bookmarkingData.incrementPage();
+                
+                curLocation = bookmarkingData.getPage();
+                prePage = "";
+                curPage = "";
+                switch(curLocation) {
+                    case 0:
+                        curPage = "pill-history-dubai";
+                        prePage = ""
+                    case 1:
+                        curPage = "pill-history-metro";
+                        prePage = "pill-history-dubai";
+                        break;
+                    case 2:
+                        curPage = "pill-station-breakdown";
+                        prePage = "pill-history-metro";
+                        break;
+                    case 3:
+                        curPage = "pill-station-location";
+                        prePage = "pill-station-breakdown";
+                        break;    
+                    case 4:
+                        curPage = "pill-station-trams";
+                        prePage = "pill-station-location";
+                        break;    
+                    case 5:
+                        curPage = "pill-facilities-wifi";
+                        prePage = "pill-station-trams";
+                        break;    
+                    case 6:
+                        curPage = "pill-facilities-handicap";
+                        prePage = "pill-facilities-wifi";
+                        break;
+                    case 7:
+                        curPage = "pill-facilities-security";
+                        prePage = "pill-facilities-handicap";
+                        break;
+                    case 8:
+                        curPage = "pill-facilities-parking";
+                        prePage = "pill-facilities-security";
+                        break;
+                    case 9:
+                        curPage = "pill-use-nolcard";
+                        prePage = "pill-facilities-parking"
+                        break;
+                    case 10:
+                        curPage = "pill-use-rules"
+                        prePage = "pill-use-nolcard"
+                        break;
+                    case 11:
+                        curPage = "pill-use-schedule"
+                        prePage = "pill-use-rules"
+                        break;
+                    case 12:
+                        // Make all pills inactive
+                        break;
+                }
+                if (curPage != "" && prePage != "") {
+                    document.getElementById(curPage).setAttribute("class", "nav-link active");
+                    document.getElementById(prePage).setAttribute("class", "nav-link");
+                }
+            }
+            goToPage();
+        }
+        
+        function doExit(){
+            document.getElementById("exitButton").setAttribute("value","Saving...");
+            bookmarkingData.save(function(){
+                document.getElementById("exitButton").setAttribute("value","Save & Exit");
+                if (confirm("Are you sure you want to Exit?")) {
+                    var statements = [];
+                    if (!bookmarkingData.getCompletion()){
+                        statements.push({
+                            verb: {
+                                id: "http://adlnet.gov/expapi/verbs/suspended",
+                                display: {
+                                    "en-US": "suspended"
+                                }
+                            },
+                            context: DubaiMetro.getContext(),
+                            result: {
+                                duration: TinCan.Utils.convertMillisecondsToISO8601Duration(bookmarkingData.getAttemptDuration())
+                            }
+                        });
+                    }
+                    statements.push({
+                        verb: {
+                            id: "http://adlnet.gov/expapi/verbs/terminated",
+                            display: {
+                                "en-US": "terminated"
+                            }
+                        },
+                        context: DubaiMetro.getContext(),
+                        result: {
+                            duration: TinCan.Utils.convertMillisecondsToISO8601Duration(bookmarkingData.getSessionDuration())
+                        }
+                    });
+                    tincan.sendStatements(statements, function (){
+                        close();
+                        document.write("Course exited and progress saved. You may now close this window.");
+                    });
+                }
+            });  
+        }
+
+        function FormatChoiceResponse(value){
+            var newValue = new String(value);
+
+            //replace all whitespace
+            newValue = newValue.replace(/\W/g, "_");
+
+            return newValue;
+        }
+
+    </script>
+<style>	
+.container {
+	padding: 3px;
+}
+</style>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-108709091-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-108709091-1');
+</script>
+
+
+<!-- Manual google analytics copy 
+        <script>
+            // Do some tracking
+            (function (i,s,o,g,r,a,m) {
+                i['GoogleAnalyticsObject']=r;i[r]=i[r]|| function() {
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=​ 1 * new Date();
+                    a=s.createElement(o),
+                    m=s.getElementsByTagName(o)[0];
+                    a.async=1;
+                    a.src=g;
+                    m.parentNode.insertBefore(a,m)
+                })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+                ga('create', 'UA-108709091-1', 'auto');
+
+                ga('send','pageview');
+                }
+        </script>-->
+</head>
+
+<body onload="doStart(false);" style="background-color: #dfdfdf;">
+
+<div class="container-fluid">
+
+<div class="row" id="header-row">
+	<div class="col-12" id="header">
+		<h1>Dubai Metro LRS</h1>
+	</div>
+</div>
+
+
+<div class="row" id="main-content">
+	
+    <!-- NAV/PATH -->
+    <!-- Bugs:
+            When accepting the option to return the page to the previous state
+            it is possible that the wrong pill in the navigation tree will be
+            active. To solve this, each refresh the page array should be checked
+            and the current page set to active.
+    -->
+	<div class="col-2" id="course-content-tree">
+		<div class="nav flex-column nav-pills nav-fill" id="v-pills-tab" role="tablist">
+            <h4>Overview</h4>
+			<a class="nav-link active " id="pill-history-dubai" role="tab" aria-controls="v-pills-home" aria-expanded="true">History</a>
+			<a class="nav-link" id="pill-history-metro" role="tab" aria-controls="v-pills-profile" aria-expanded="true">Inception</a>
+            <h4>Network</h4>
+			<a class="nav-link" id="pill-station-breakdown" role="tab" aria-controls="v-pills-messages" aria-expanded="true">Basics</a>
+            <a class="nav-link" id="pill-station-location" role="tab" aria-controls="v-pills-settings" aria-expanded="true">Locations</a>
+            <a class="nav-link" id="pill-station-trams" role="tab" aria-controls="v-pills-settings" aria-expanded="true">Tram</a>
+            <h4>Facilities</h4>
+            <a class="nav-link" id="pill-facilities-wifi" role="tab" aria-controls="v-pills-settings" aria-expanded="true">Connectivity</a>
+            <a class="nav-link" id="pill-facilities-handicap" role="tab" aria-controls="v-pills-settings" aria-expanded="true">Handicap</a>
+            <a class="nav-link" id="pill-facilities-security" role="tab" aria-controls="v-pills-settings" aria-expanded="true">Security</a>
+            <a class="nav-link" id="pill-facilities-parking" role="tab" aria-controls="v-pills-settings" aria-expanded="true">Parking</a>
+            <h4>Useage</h4>
+            <a class="nav-link" id="pill-use-nolcard" role="tab" aria-controls="v-pills-settings" aria-expanded="true">NolCard</a>
+            <a class="nav-link" id="pill-use-rules" role="tab" aria-controls="v-pills-settings" aria-expanded="true">Regulations</a>
+            <a class="nav-link" id="pill-use-schedule" role="tab" aria-controls="v-pills-settings" aria-expanded="true">Schedule</a>
+		</div>        
+	</div>
+	
+    <!-- CONTENT -->
+	<div class="col-10" id="course-module-content">
+		<iframe width="100%" style="height: 300px" id="contentFrame" src=""></iframe>
+		<div id="navDiv">
+
+			<button class="btn btn-secondary" type="submit" id="butPrevious" onclick="doPrevious();"><i class="fa fa-chevron-left fa-2" aria-hidden="true"></i>   Previous</button>
+			<button type="submit" class="btn btn-secondary" type="button" id="butNext" onclick="doNext();">Next   <i class="fa fa-chevron-right fa-2" aria-hidden="true"></i></button> 
+
+			<button type="submit" class="btn btn-danger float-right" type="button" id="exitButton" onclick="doExit();"><div><i class="fa fa-floppy-o fa-2" aria-hidden="true"></i>   Save &amp; Exit</button>
+		</div>
+	</div>
+</div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-26545776-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+</script>
+</body>
+</html>
+

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Metro History</title>
+    <style type="text/css" media="screen">
+        @import url( ../css/style.css );
+    </style>
+    <script src="../scripts/TinCanJS/build/tincan-min.js" type="text/javascript"></script>
+    <script src="../scripts/common.js" type="text/javascript"></script>
+    <script src="../scripts/contentfunctions.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <script type="text/javascript">
+        var tincan = new TinCan (
+            {
+                url: window.location.href,
+                activity: {
+                    id: DubaiMetro.CourseActivity.id + "/Playing/Playing",
+                    definition: {
+                        name: {
+                            "en-US": "Metro History"
+                        },
+                        description: {
+                            "en-US": "A quick historical system of the Dubai Metro System."
+                        }, 
+                        type: "http://activitystrea.ms/schema/1.0/page"
+                    }
+                }
+            }
+        );
+
+        tincan.sendStatement(
+            {
+                verb: {
+                    id: "http://adlnet.gov/expapi/verbs/experienced",
+                    display: {
+                        "en-US" : "experienced"
+                    }
+                },
+                context: DubaiMetro.getContext(
+                    DubaiMetro.CourseActivity.id
+                )
+            },
+            function () {}
+        );
+    </script>
+</head>
+<body>
+<h1>Inception of Dubai Rapid Transit</h1>
+<img class="img-fluid rounded float-right" src="over-p1.jpg" id="dubaimetroimg" alt="dubai metro image" height="345" width="460" hspace="20"/>
+<p style="font-size: 20px" class="p-3">The build and design contract was awarded to a consortium of Japanese and Turkish companies in May of 2005. The initial opening of the $4 billion rail projects inaugurated by H.H.S. Maktoum on the 9th of September 2009. Almost immediately the rail system was put to the test. In the first week of operation the rail had already carried almost 300,000 passengers and ultimately the system saw yearly increase of 40%. The RTA (Dubai’s Road and Transportation Authority) recently announced that in September of 2017 the Dubai Metro System had carried its billionth passenger. This passenger milestones are not achieved frivolously, the system has experienced a kilometers traveled to incident ratio other systems can only dream about. Needless to say the Dubai Metro System has been a success and will be a fixture and even an attraction of the city for many decades to come.</p>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+[submodule "scripts/TinCanJS"]
+	path = scripts/TinCanJS
+	url = git://github.com/RusticiSoftware/TinCanJS.git

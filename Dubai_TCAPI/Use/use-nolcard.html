@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Nol Card</title>
+        <style type="text/css" media="screen">
+        @import url( ../css/style.css );
+        </style>
+        <script src="../scripts/TinCanJS/build/tincan-min.js" type="text/javascript"></script>
+        <script src="../scripts/common.js" type="text/javascript"></script>
+        <script src="../scripts/contentfunctions.js" type="text/javascript"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+        <script type="text/javascript">
+        var tincan = new TinCan (
+        {
+        url: window.location.href,
+        activity: {
+        id: DubaiMetro.CourseActivity.id + "/Use/use-nolcard",
+        definition: {
+        name: {
+        "en-US": "Nol Card"
+        },
+        description: {
+        "en-US": "Introduction to Nol Card"
+        },
+        type: "http://activitystrea.ms/schema/1.0/page"
+        }
+        }
+        }
+        );
+        tincan.sendStatement(
+        {
+        verb: {
+        id: "http://adlnet.gov/expapi/verbs/experienced",
+        display: {
+        "en-US" : "experienced"
+        }
+        },
+        context: DubaiMetro.getContext(
+        DubaiMetro.CourseActivity.id
+        )
+        },
+        function () {}
+        );
+        </script>
+    </head>
+    <body>
+        <h1>Fare Payment Methods: Nol Card</h1>
+        <img src="use-p0.jpg" class="img-fluid rounded float-right" id="dubaimetroimg" alt="dubai metro image" width="345px" height="460px" hspace="20" />
+        <div style="font-size: 20px">
+            <p style="font-size: 20px">The central artifact to the fare system is the Nol card. A Nol Card is a smart card that enables you to pay for the use of various RTA transport modes in Dubai with a single card. You can use your Nol Card to travel on Dubai's Metro, Buses, Water Buses,Dubai Tram as well as pay for RTA's Paid Parking. There are four categories of Nol Cards which are identified by color. Nol cards are primarily dispensed at the station, either from a ticketing agent or and automated fare purchasing station.</p>
+            <div class="card" style="width: 20rem;">
+                <img class="card-img-top" src="use-card-silver.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <h4 class="card-title">Silver</h4>
+                    <p class="card-text">An Anonymous card with an e-purse that can be loaded with up to AED 5000. (USD 1371)</p>
+                    <h1><span class="badge badge-secondary">AED 20</span></h1>
+                </div>
+            </div>
+            <div class="card" style="width: 20rem;">
+                <img class="card-img-top" src="use-card-gold.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <h4 class="card-title">Gold</h4>
+                    <p class="card-text">An anonymous card with the same features as the Silver Card, but it gives you the privileged access to Metro's Gold Class seats for premium charges.</p>
+                    <h1><span class="badge badge-secondary">AED 20</span></h1>
+                </div>
+            </div>
+            <div class="card" style="width: 20rem;">
+                <img class="card-img-top" src="use-card-blue.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <h4 class="card-title">Blue</h4>
+                    <p class="card-text">A personal card with a secure e-purse that can be loaded with up to AED 500. (USD 137) *Requires a subscription.</p>
+                    <h1><span class="badge badge-secondary">AED 50</span></h1>
+                </div>
+            </div>
+            <div class="card" style="width: 20rem;">
+                <img class="card-img-top" src="use-card-red.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <h4 class="card-title">Red</h4>
+                    <p class="card-text">A paper-based ticket that doesn't have e-purse, and can be loaded with 10 trips. Which is most like a traditional train ticket.</p>
+                    <h1><span class="badge badge-secondary">AED 2</span></h1>
+                </div>
+            </div>
+        </div>
+    <script type="text/javascript">
+    AddLicenseInfo("Wikipedia", "http://en.wikipedia.org/wiki/Dubai");
+    AddTagLine();
+    </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+    </body>
+</html>
