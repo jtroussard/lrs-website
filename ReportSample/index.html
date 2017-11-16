@@ -18,6 +18,7 @@
             <ul class="tabs">
                 <!-- Give href an ID value of corresponding "tabs-content" <li>'s -->
                 <li><a class="active" href="#allStatements">Statements</a></li>
+                <li><a href="#dubaiCourse">Dubai Metro Course Reporting</a></li>
                 <li><a href="#golfCourse">Golf Course Reporting</a></li>
                 <li><a href="#tetrisScores">Tetris Reporting</a></li>
                 <li><a href="#locatorCourse">Locator Reporting</a></li>
@@ -32,6 +33,24 @@
                     <button id='refreshStatements'>Refresh</button>
                     <div id='theStatements'></div>
                     <button id='showAllStatements'>More...</button>
+                </li>
+                <li id="dubaiCourse">
+                    <button id='refreshDubaiData'>Refresh</button>
+                    <div class="heading">Dubai Metro Course Learners</div>
+                    <div id='dubaiCourseData' ></div>
+                    <br/><br/>
+                    <div class="heading">Assessment Question Results</div>
+                    <div id='dubaiCourseQuestionData'>
+                        <table id='dubaiQuestions'>
+                            <tr class="labels">
+                                <td class="question">Question</td>
+                                <td class="correctAnswer">Correct Answer</td>
+                                <td class="metric">Total</td>
+                                <td class="metric">Correct</td>
+                                <td class="metric">Incorrect</td>
+                            </tr>
+                        </table>
+                    </div>
                 </li>
                 <li id="golfCourse">
                     <button id='refreshGolfData'>Refresh</button>

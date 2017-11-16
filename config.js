@@ -6,5 +6,5 @@ function Config() {
 Config.endpoint = "https://jts7first7lrs.waxlrs.com/TCAPI/";
 Config.authUser = "fb18XeDrV8UQ7yXe5a2y";
 Config.authPassword = "Bo75hxcXoYHmSSdMrWCY";
-Config.actor = { "mbox":"", "name":"" };
+Config.actor = { "mbox":"mailbox@email.com", "name":"John Doe" };
 Config.registration = "<registration-uuid>";

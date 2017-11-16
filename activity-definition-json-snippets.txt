@@ -31,6 +31,16 @@ http://id.tincanapi.com/activity/tincan-prototypes/golf-example
     }
 }
 
+http://id.tincanapi.com/activity/tincan-prototypes/dubai-example/DubaiAssessment
+{
+    "name": {
+        "en-US": "Dubai Metro Assessment"
+    },
+    "description": {
+        "en-US": "An Assessment for the Dubai Metro course."
+    },
+    "type": "http://adlnet.gov/expapi/activities/assessment"
+}
 
 http://id.tincanapi.com/activity/tincan-prototypes/golf-example/GolfAssessment
 {

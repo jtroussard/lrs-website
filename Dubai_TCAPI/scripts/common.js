@@ -1,7 +1,7 @@
 DubaiMetro = {};
 
 DubaiMetro.CourseActivity = {
-    id: "http://id.tincanapi.com/activity/tincan-prototypes/dubaimetro",
+    id: "http://id.tincanapi.com/activity/tincan-prototypes/dubai-example",
     definition: {
         type: "http://adlnet.gov/expapi/activities/course",
         name: {
@@ -27,7 +27,7 @@ DubaiMetro.getContext = function(parentActivityId, isAssessment) {
             ],
             category: [
                  {
-                    id: "http://id.tincanapi.com/recipe/tincan-prototypes/golf/1",
+                    id: "http://id.tincanapi.com/recipe/tincan-prototypes/dubaimetro/1",
                     definition: {
                         type: "http://id.tincanapi.com/activitytype/recipe"
                     }

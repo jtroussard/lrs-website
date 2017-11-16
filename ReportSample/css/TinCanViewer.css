@@ -55,3 +55,46 @@ table#courseLocations td {padding:3px;text-align:right;}
 table#courseLocations td.location {text-align:left;width:80%;}
 table#courseLocations td.location .description {font-size:.8em;color:#888888;}
 table#courseLocations td.metric {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+#dubaiCourseData table {width:300px;}
+#dubaiCourseData tr.labels td {font-size:.8em;text-decoration:underline;}
+#dubaiCourseData td {padding:3px 0;}
+#dubaiCourseData td.name {}
+#dubaiCourseData td.completion {text-align:right;}
+#dubaiCourseData td.completion.complete, #dubaiCourseData td.completion.passed {color:green;}
+#dubaiCourseData td.completion.incomplete, #dubaiCourseData td.completion.failed {color:red;}
+#dubaiCourseData td.score {text-align:right;}
+
+table#dubaiQuestions {}
+table#dubaiQuestions tr.labels td {font-size:.8em;text-decoration:underline;}
+table#dubaiQuestions td {padding:3px;text-align:right;}
+table#dubaiQuestions td.question {text-align:left;}
+table#dubaiQuestions td.correctAnswer {}
+table#dubaiQuestions td.metric {}
+
+#locationCourseData table {width:300px;}
+#locationCourseData tr.labels td {font-size:.8em;text-decoration:underline;}
+#locationCourseData td {padding:3px 0;}
+#locationCourseData td.name {}
+#locationCourseData td.completion {text-align:right;}
+#locationCourseData td.completion.complete {color:green;}
+#locationCourseData td.completion.incomplete {color:red;}
+
+table#courseLocations {}
+table#courseLocations tr.labels td {font-size:.8em;text-decoration:underline;}
+table#courseLocations td {padding:3px;text-align:right;}
+table#courseLocations td.location {text-align:left;width:80%;}
+table#courseLocations td.location .description {font-size:.8em;color:#888888;}
+table#courseLocations td.metric {}
