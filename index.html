@@ -380,7 +380,7 @@
                 document.getElementById('tc_emailInput_golf').value = u_mail;
                 document.getElementById('tc_nameInput_loc').value = u_name;
                 document.getElementById('tc_emailInput_loc').value = u_mail;
-                document.getElementById('prompt').innerHTML = "Now that you're logged in click on New Registration and Select a course.";
+                document.getElementById('prompt').innerHTML = "CLICK NEW REGISTRATION before selecting a course.";
                 PROTOTYPE_REGISTRATION = TinCan.Utils.getUUID();
                 $('#defRegistration').text(PROTOTYPE_REGISTRATION);
             });
@@ -431,7 +431,7 @@
                     <hr>
 
                     <div id="facebook">
-                        <h5 id="prompt"></h5>
+                        <h4 id="prompt"></h4>
                         <div onlogin="checkLoginState()" class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="true" data-scope="public_profile,email,user_likes"></div>
                     </div>
 
