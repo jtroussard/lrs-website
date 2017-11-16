@@ -580,11 +580,11 @@ function RenderDubaiData (err, result) {
 
     statements = result.statements;
 
-    html = "<table><tr class='labels'>";
-    html += "<td class='name'>Learner</td>";
-    html += "<td class='completion'>Status</td>";
-    html += "<td class='score'>Score</td>";
-    html += "</tr>";
+    html = "<table class=\"table table-hover\"><thead><tr class=\"table-active\">";
+    html += "<th style=\"width: 60%\" class='name'>Learner</td>";
+    html += "<th style=\"width: 20%\" class='completion'>Status</td>";
+    html += "<th style=\"width: 20%\" class='score'>Score</td>";
+    html += "</tr></thead><tbody>";
 
     for (i = 0; i < statements.length; i++) {
         if (statements[i].actor === null) {
@@ -619,9 +619,9 @@ function RenderDubaiData (err, result) {
         html += "<td class='name'>" + l.name + "</td>";
         html += "<td class='completion " + l.complete + "'>" + l.complete + "</td>";
         html += "<td class='score' mbox='" + learners[j] + "'>" + l.score + "</td>";
-        html += "<tr>";
+        html += "</tr>";
     }
-    html += "</table>";
+    html += "</tbody></table>";
 
     $("#dubaiCourseData").append(html);
 
@@ -854,15 +854,15 @@ function RenderDubaiQuestions (err, result) {
         questionId = sortedQuestionIds[i];
         results = resultsByQuestion[questionId];
 
-        html = "<tr class='dubaiQuestion'>";
-            html += "<td class='question'>" + results["question"] + "</td>";
-            html += "<td class='correctAnswer'>" + results["correctAnswer"] + "</td>";
-            html += "<td class='metric'>" + (results["numCorrect"] + results["numIncorrect"]) + "</td>";
-            html += "<td class='metric'>" + results["numCorrect"] + "</td>";
-            html += "<td class='metric'>" + results["numIncorrect"] + "</td>";
+        html = "<tr>";
+        html += "<td>" + results["question"] + "</td>";
+        html += "<td>" + results["correctAnswer"] + "</td>";
+        html += "<td>" + (results["numCorrect"] + results["numIncorrect"]) + "</td>";
+        html += "<td>" + results["numCorrect"] + "</td>";
+        html += "<td>" + results["numIncorrect"] + "</td>";
         html += "</tr>";
 
-        $("table#dubaiQuestions").append(html);
+        $("tbody#dubaiQuestionBody").append(html);
     }
 }
 
